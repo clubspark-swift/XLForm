@@ -32,4 +32,7 @@
 @property (nonatomic, readonly) UILabel * textLabel;
 @property (nonatomic, readonly) UITextField * textField;
 
+-(NSArray *)layoutConstraints;
+- (void)textFieldDidChange:(UITextField *)textField;
+
 @end

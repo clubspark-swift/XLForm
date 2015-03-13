@@ -99,6 +99,9 @@ NSString * const kText = @"text";
 -(void)valueChanged
 {
     self.rowDescriptor.value = [self.rowDescriptor.selectorOptions objectAtIndex:self.segmentedControl.selectedSegmentIndex];
+    
+    [self.formViewController.tableView endEditing:YES];
+
 }
 
 #pragma mark - Helper

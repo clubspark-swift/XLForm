@@ -531,7 +531,7 @@
     if (nextIndexPath){
         XLFormRowDescriptor * nextFormRow = [self.form formRowAtIndex:nextIndexPath];
         UITableViewCell<XLFormDescriptorCell> * nextCell = (UITableViewCell<XLFormDescriptorCell> *)[nextFormRow cellForFormController:self];
-        if ([nextCell respondsToSelector:@selector(formDescriptorCellBecomeFirstResponder)]){
+        if ([nextCell respondsToSelector:@selector(formDescriptorCellBecomeFirstResponder)] && [nextCell formDescriptorCellBecomeFirstResponder]){
             [nextCell formDescriptorCellBecomeFirstResponder];
             return YES;
         }

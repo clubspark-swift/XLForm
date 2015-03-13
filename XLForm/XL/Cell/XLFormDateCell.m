@@ -131,7 +131,7 @@
 
 -(BOOL)formDescriptorCellBecomeFirstResponder
 {
-    return YES;
+    return NO;
 }
 
 #pragma mark - helpers

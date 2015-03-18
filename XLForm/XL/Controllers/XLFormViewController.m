@@ -355,7 +355,7 @@
             self.tableView.contentInset = tableContentInset;
             self.tableView.scrollIndicatorInsets = tableScrollIndicatorInsets;
             NSIndexPath *selectedRow = [self.tableView indexPathForCell:cell];
-            [self.tableView scrollToRowAtIndexPath:selectedRow atScrollPosition:UITableViewScrollPositionNone animated:NO];
+            [self.tableView scrollToRowAtIndexPath:selectedRow atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
             [UIView commitAnimations];
         }
     }

@@ -34,5 +34,6 @@
 
 -(NSArray *)layoutConstraints;
 - (void)textFieldDidChange:(UITextField *)textField;
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
 
 @end

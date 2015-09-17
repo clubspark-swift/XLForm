@@ -121,6 +121,8 @@ NSString * const kText = @"text";
     [[self getItems] enumerateObjectsUsingBlock:^(id object, NSUInteger idex, __unused BOOL *stop){
         [self.segmentedControl insertSegmentWithTitle:[object displayText] atIndex:idex animated:NO];
     }];
+    
+    self.segmentedControl.enabled = !self.rowDescriptor.disabled;
 }
 
 -(NSInteger)selectedIndex

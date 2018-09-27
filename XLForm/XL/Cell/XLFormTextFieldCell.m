@@ -230,7 +230,7 @@ NSString *const XLFormTextFieldLengthPercentage = @"textFieldLengthPercentage";
             self.dynamicCustomConstraints = [NSMutableArray arrayWithArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[textField]-|" options:0 metrics:nil views:views]];
         }
     }
-
+/*
     [self.dynamicCustomConstraints addObject:[NSLayoutConstraint constraintWithItem:_textField
                                                                           attribute:NSLayoutAttributeWidth
                                                                           relatedBy:self.textFieldLengthPercentage ? NSLayoutRelationEqual : NSLayoutRelationGreaterThanOrEqual
@@ -238,7 +238,7 @@ NSString *const XLFormTextFieldLengthPercentage = @"textFieldLengthPercentage";
                                                                           attribute:NSLayoutAttributeWidth
                                                                          multiplier:self.textFieldLengthPercentage ? [self.textFieldLengthPercentage floatValue] : 0.3
                                                                            constant:0.0]];
-
+*/
     [self.contentView addConstraints:self.dynamicCustomConstraints];
     [super updateConstraints];
 }

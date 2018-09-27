@@ -91,4 +91,6 @@ typedef NS_OPTIONS(NSUInteger, XLFormRowNavigationOptions) {
 
 -(void)forceEvaluate;
 
+-(instancetype)initWithTitle:(NSString *)title;
+    
 @end

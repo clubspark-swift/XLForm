@@ -33,6 +33,10 @@ extern NSString *const XLFormTextFieldLengthPercentage;
 @property (nonatomic, readonly) UILabel * textLabel;
 @property (nonatomic, readonly) UITextField * textField;
 
+    -(NSArray *)layoutConstraints;
+- (void)textFieldDidChange:(UITextField *)textField;
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
+    
 @property (nonatomic) NSNumber *textFieldLengthPercentage;
 
 @end

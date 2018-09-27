@@ -2,7 +2,7 @@
 //  XLFormLeftRightSelectorCell.m
 //  XLForm ( https://github.com/xmartlabs/XLForm )
 //
-//  Copyright (c) 2014 Xmartlabs ( http://xmartlabs.com )
+//  Copyright (c) 2015 Xmartlabs ( http://xmartlabs.com )
 //
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,11 +27,6 @@
 #import "XLFormRightImageButton.h"
 #import "NSObject+XLFormAdditions.h"
 #import "XLFormLeftRightSelectorCell.h"
-
-@interface XLFormLeftRightSelectorCell() <UIActionSheetDelegate>
-
-@end
-
 
 @implementation XLFormLeftRightSelectorCell
 {
@@ -109,10 +104,10 @@
 {
     [super configure];
     UIView * separatorView = [UIView autolayoutView];
-    [separatorView setBackgroundColor:[UIColor colorWithWhite:0.85 alpha:1.0]];
     _constraintTextField = [UITextField autolayoutView];
     [_constraintTextField setText:@"Option"];
-    [_constraintTextField setFont:[UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline]];
+    _constraintTextField.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    [separatorView setBackgroundColor:[UIColor colorWithWhite:0.85 alpha:1.0]];
     [self.contentView addSubview:_constraintTextField];
     [_constraintTextField setHidden:YES];
     [self.contentView addSubview:self.leftButton];
@@ -123,7 +118,7 @@
     NSDictionary * views = @{@"leftButton" : self.leftButton, @"rightLabel": self.rightLabel, @"separatorView": separatorView, @"constraintTextField": _constraintTextField };
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.leftButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:0.0f]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[constraintTextField]" options:0 metrics:nil views:views]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[leftButton]-[separatorView(1)]-[rightLabel]-14-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[leftButton]-[separatorView(1)]-[rightLabel]-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[separatorView(20)]" options:0 metrics:nil views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[constraintTextField]-12-|" options:0 metrics:0 views:views]];
 }
@@ -131,15 +126,15 @@
 -(void)update
 {
     [super update];
+    self.leftButton.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.rightLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     [self.leftButton setTitle:[NSString stringWithFormat:@"%@%@", [self.rowDescriptor.leftRightSelectorLeftOptionSelected displayText], self.rowDescriptor.required && self.rowDescriptor.sectionDescriptor.formDescriptor.addAsteriskToRequiredRowsTitle ? @"*" : @""] forState:UIControlStateNormal];
     [self.rowDescriptor setTitle:[self.rowDescriptor.leftRightSelectorLeftOptionSelected displayText]];
     self.rightLabel.text = [self rightTextLabel];
-    [self.leftButton setEnabled:(!self.rowDescriptor.disabled)];
-    self.accessoryView = self.rowDescriptor.disabled ? nil : [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"XLForm.bundle/forwardarrow.png"]];
-    self.selectionStyle = self.rowDescriptor.disabled ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleDefault;    
-    self.leftButton.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    self.rightLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    _constraintTextField.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    [self.leftButton setEnabled:!self.rowDescriptor.isDisabled];
+    self.accessoryView = self.rowDescriptor.isDisabled ? nil : [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"XLForm.bundle/forwardarrow.png"]];
+    self.editingAccessoryView = self.accessoryView;
+    self.selectionStyle = self.rowDescriptor.isDisabled ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleDefault;
 }
 
 
@@ -154,7 +149,7 @@
     if (self.rowDescriptor.leftRightSelectorLeftOptionSelected){
         XLFormLeftRightSelectorOption * option = [self leftOptionForOption:self.rowDescriptor.leftRightSelectorLeftOptionSelected];
         if (option.rightOptions){
-            XLFormOptionsViewController * optionsViewController = [[XLFormOptionsViewController alloc]  initWithOptions:option.rightOptions style:UITableViewStyleGrouped];
+            XLFormOptionsViewController * optionsViewController = [[XLFormOptionsViewController alloc]  initWithStyle:UITableViewStyleGrouped];
             optionsViewController.title = option.selectorTitle;
             optionsViewController.rowDescriptor = self.rowDescriptor;
             [controller.navigationController pushViewController:optionsViewController animated:YES];
@@ -176,35 +171,43 @@
     return option.httpParameterKey;
 }
 
+- (id) chooseNewRightValueFromOption:(XLFormLeftRightSelectorOption*)option
+{
+    switch (option.leftValueChangePolicy) {
+        case XLFormLeftRightSelectorOptionLeftValueChangePolicyChooseLastOption:
+            return [option.rightOptions lastObject];
+        case XLFormLeftRightSelectorOptionLeftValueChangePolicyChooseFirstOption:
+            return [option.rightOptions firstObject];
+        case XLFormLeftRightSelectorOptionLeftValueChangePolicyNullifyRightValue:
+            return nil;
+    }
+    return nil;
+}
+
 
 #pragma mark - Actions
 
 
 -(void)leftButtonPressed:(UIButton *)leftButton
 {
-    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:self.rowDescriptor.selectorTitle delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
-    actionSheet.tag = [self.rowDescriptor hash];
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:self.rowDescriptor.selectorTitle
+                                                                              message:nil
+                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:nil]];
+    __weak __typeof(self)weakSelf = self;
     for (XLFormLeftRightSelectorOption * leftOption in self.rowDescriptor.selectorOptions) {
-        [actionSheet addButtonWithTitle:[leftOption.leftValue displayText]];
+        [alertController addAction:[UIAlertAction actionWithTitle:[leftOption.leftValue displayText]
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction *action) {
+                                                              weakSelf.rowDescriptor.value = [self chooseNewRightValueFromOption:leftOption];
+                                                              weakSelf.rowDescriptor.leftRightSelectorLeftOptionSelected = [self leftOptionForDescription:[leftOption.leftValue displayText]].leftValue;
+                                                              [weakSelf.formViewController updateFormRow:weakSelf.rowDescriptor];
+                                                          }]];
     }
-    actionSheet.cancelButtonIndex = [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-    [actionSheet showInView:self.formViewController.view];
+    
+    [self.formViewController presentViewController:alertController animated:YES completion:nil];
 }
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if ([actionSheet cancelButtonIndex] != buttonIndex){
-        NSString * title = [actionSheet buttonTitleAtIndex:buttonIndex];
-        if (![self.rowDescriptor.leftRightSelectorLeftOptionSelected isEqual:[self leftOptionForDescription:title].leftValue]){            
-            self.rowDescriptor.value = nil;
-            self.rowDescriptor.leftRightSelectorLeftOptionSelected = [self leftOptionForDescription:title].leftValue;
-            [self update];
-
-        }
-    }
-}
-
 
 @end

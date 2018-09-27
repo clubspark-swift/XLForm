@@ -2,7 +2,7 @@
 //  XLFormTextFieldCell.h
 //  XLForm ( https://github.com/xmartlabs/XLForm )
 //
-//  Copyright (c) 2014 Xmartlabs ( http://xmartlabs.com )
+//  Copyright (c) 2015 Xmartlabs ( http://xmartlabs.com )
 //
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,10 +24,12 @@
 // THE SOFTWARE.
 
 #import "XLFormBaseCell.h"
-
 #import <UIKit/UIKit.h>
 
-@interface XLFormTextFieldCell : XLFormBaseCell
+extern NSString *const XLFormTextFieldLengthPercentage;
+extern NSString *const XLFormTextFieldMaxNumberOfCharacters;
+
+@interface XLFormTextFieldCell : XLFormBaseCell <XLFormReturnKeyProtocol>
 
 @property (nonatomic, readonly) UILabel * textLabel;
 @property (nonatomic, readonly) UITextField * textField;
@@ -35,5 +37,8 @@
 -(NSArray *)layoutConstraints;
 - (void)textFieldDidChange:(UITextField *)textField;
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
+
+@property (nonatomic) NSNumber *textFieldLengthPercentage;
+@property (nonatomic) NSNumber *textFieldMaxNumberOfCharacters;
 
 @end

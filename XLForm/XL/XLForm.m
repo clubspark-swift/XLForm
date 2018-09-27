@@ -2,7 +2,7 @@
 //  XLForm.m
 //  XLForm ( https://github.com/xmartlabs/XLForm )
 //
-//  Copyright (c) 2014 Xmartlabs ( http://xmartlabs.com )
+//  Copyright (c) 2015 Xmartlabs ( http://xmartlabs.com )
 //
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,7 @@
 
 #import "XLForm.h"
 
-NSString * const XLFormRowDescriptorTypeText = @"text";
+NSString *const XLFormRowDescriptorTypeText = @"text";
 NSString *const XLFormRowDescriptorTypeName = @"name";
 NSString *const XLFormRowDescriptorTypeURL = @"url";
 NSString *const XLFormRowDescriptorTypeEmail = @"email";
@@ -36,8 +36,10 @@ NSString *const XLFormRowDescriptorTypePhone = @"phone";
 NSString *const XLFormRowDescriptorTypeTwitter = @"twitter";
 NSString *const XLFormRowDescriptorTypeAccount = @"account";
 NSString *const XLFormRowDescriptorTypeInteger = @"integer";
+NSString *const XLFormRowDescriptorTypeImage = @"image";
 NSString *const XLFormRowDescriptorTypeDecimal = @"decimal";
 NSString *const XLFormRowDescriptorTypeTextView = @"textView";
+NSString *const XLFormRowDescriptorTypeZipCode = @"zipCode";
 NSString *const XLFormRowDescriptorTypeSelectorPush = @"selectorPush";
 NSString *const XLFormRowDescriptorTypeSelectorPopover = @"selectorPopover";
 NSString *const XLFormRowDescriptorTypeSelectorActionSheet = @"selectorActionSheet";
@@ -51,9 +53,11 @@ NSString *const XLFormRowDescriptorTypeSelectorSegmentedControl = @"selectorSegm
 NSString *const XLFormRowDescriptorTypeDateInline = @"dateInline";
 NSString *const XLFormRowDescriptorTypeDateTimeInline = @"datetimeInline";
 NSString *const XLFormRowDescriptorTypeTimeInline = @"timeInline";
+NSString *const XLFormRowDescriptorTypeCountDownTimerInline = @"countDownTimerInline";
 NSString *const XLFormRowDescriptorTypeDate = @"date";
 NSString *const XLFormRowDescriptorTypeDateTime = @"datetime";
 NSString *const XLFormRowDescriptorTypeTime = @"time";
+NSString *const XLFormRowDescriptorTypeCountDownTimer = @"countDownTimer";
 NSString *const XLFormRowDescriptorTypeDatePicker = @"datePicker";
 NSString *const XLFormRowDescriptorTypePicker = @"picker";
 NSString *const XLFormRowDescriptorTypeSlider = @"slider";

@@ -2,7 +2,7 @@
 //  NSObject+XLFormAdditions.m
 //  XLForm ( https://github.com/xmartlabs/XLForm )
 //
-//  Copyright (c) 2014 Xmartlabs ( http://xmartlabs.com )
+//  Copyright (c) 2015 Xmartlabs ( http://xmartlabs.com )
 //
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,11 +31,11 @@
 
 -(NSString *)displayText
 {
-    if ([self isKindOfClass:[NSString class]] || [self isKindOfClass:[NSNumber class]]){
-        return [self description];
-    }
     if ([self conformsToProtocol:@protocol(XLFormOptionObject)]){
         return [(id<XLFormOptionObject>)self formDisplayText];
+    }
+    if ([self isKindOfClass:[NSString class]] || [self isKindOfClass:[NSNumber class]]){
+        return [self description];
     }
     return nil;
 }

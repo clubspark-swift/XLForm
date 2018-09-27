@@ -2,7 +2,7 @@
 //  XLFormDescriptor.h
 //  XLForm ( https://github.com/xmartlabs/XLForm )
 //
-//  Copyright (c) 2014 Xmartlabs ( http://xmartlabs.com )
+//  Copyright (c) 2015 Xmartlabs ( http://xmartlabs.com )
 //
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,8 +28,8 @@
 #import "XLFormDescriptorDelegate.h"
 #import <Foundation/Foundation.h>
 
-extern NSString * const XLFormErrorDomain;
-extern NSString * const XLValidationStatusErrorKey;
+extern NSString * __nonnull const XLFormErrorDomain;
+extern NSString * __nonnull const XLValidationStatusErrorKey;
 
 typedef NS_ENUM(NSInteger, XLFormErrorCode)
 {
@@ -37,46 +37,59 @@ typedef NS_ENUM(NSInteger, XLFormErrorCode)
     XLFormErrorCodeRequired = -1000
 };
 
+typedef NS_OPTIONS(NSUInteger, XLFormRowNavigationOptions) {
+    XLFormRowNavigationOptionNone                               = 0,
+    XLFormRowNavigationOptionEnabled                            = 1 << 0,
+    XLFormRowNavigationOptionStopDisableRow                     = 1 << 1,
+    XLFormRowNavigationOptionSkipCanNotBecomeFirstResponderRow  = 1 << 2,
+    XLFormRowNavigationOptionStopInlineRow                      = 1 << 3,
+};
+
 @class XLFormSectionDescriptor;
 
 @interface XLFormDescriptor : NSObject
 
-@property (readonly, nonatomic) NSMutableArray * formSections;
-@property (readonly) NSString * title;
+@property (readonly, nonatomic, nonnull) NSMutableArray * formSections;
+@property (readonly, nullable) NSString * title;
+@property (nonatomic) BOOL endEditingTableViewOnScroll;
 @property (nonatomic) BOOL assignFirstResponderOnShow;
 @property (nonatomic) BOOL addAsteriskToRequiredRowsTitle;
+@property (getter=isDisabled) BOOL disabled;
+@property (nonatomic) XLFormRowNavigationOptions rowNavigationOptions;
 
-@property (weak) id<XLFormDescriptorDelegate> delegate;
+@property (weak, nullable) id<XLFormDescriptorDelegate> delegate;
 
--(id)initWithTitle:(NSString *)title;
-+(XLFormDescriptor *)formDescriptor;
-+(XLFormDescriptor *)formDescriptorWithTitle:(NSString *)title;
++(nonnull instancetype)formDescriptor;
++(nonnull instancetype)formDescriptorWithTitle:(nullable NSString *)title;
 
--(void)addFormSection:(XLFormSectionDescriptor *)formSection;
--(void)addFormSection:(XLFormSectionDescriptor *)formSection atIndex:(NSUInteger)index;
--(void)addFormSection:(XLFormSectionDescriptor *)formSection afterSection:(XLFormSectionDescriptor *)afterSection;
--(void)addFormRow:(XLFormRowDescriptor *)formRow beforeRow:(XLFormRowDescriptor *)afterRow;
--(void)addFormRow:(XLFormRowDescriptor *)formRow beforeRowTag:(NSString *)afterRowTag;
--(void)addFormRow:(XLFormRowDescriptor *)formRow afterRow:(XLFormRowDescriptor *)afterRow;
--(void)addFormRow:(XLFormRowDescriptor *)formRow afterRowTag:(NSString *)afterRowTag;
+-(void)addFormSection:(nonnull XLFormSectionDescriptor *)formSection;
+-(void)addFormSection:(nonnull XLFormSectionDescriptor *)formSection atIndex:(NSUInteger)index;
+-(void)addFormSection:(nonnull XLFormSectionDescriptor *)formSection afterSection:(nonnull XLFormSectionDescriptor *)afterSection;
+-(void)addFormRow:(nonnull XLFormRowDescriptor *)formRow beforeRow:(nonnull XLFormRowDescriptor *)afterRow;
+-(void)addFormRow:(nonnull XLFormRowDescriptor *)formRow beforeRowTag:(nonnull NSString *)afterRowTag;
+-(void)addFormRow:(nonnull XLFormRowDescriptor *)formRow afterRow:(nonnull XLFormRowDescriptor *)afterRow;
+-(void)addFormRow:(nonnull XLFormRowDescriptor *)formRow afterRowTag:(nonnull NSString *)afterRowTag;
 -(void)removeFormSectionAtIndex:(NSUInteger)index;
--(void)removeFormSection:(XLFormSectionDescriptor *)formSection;
--(void)removeFormRow:(XLFormRowDescriptor *)formRow;
--(void)removeFormRowWithTag:(NSString *)tag;
+-(void)removeFormSection:(nonnull XLFormSectionDescriptor *)formSection;
+-(void)removeFormRow:(nonnull XLFormRowDescriptor *)formRow;
+-(void)removeFormRowWithTag:(nonnull NSString *)tag;
 
+-(nullable XLFormRowDescriptor *)formRowWithTag:(nonnull NSString *)tag;
+-(nullable XLFormRowDescriptor *)formRowAtIndex:(nonnull NSIndexPath *)indexPath;
+-(nullable XLFormRowDescriptor *)formRowWithHash:(NSUInteger)hash;
+-(nullable XLFormSectionDescriptor *)formSectionAtIndex:(NSUInteger)index;
 
--(XLFormRowDescriptor *)formRowWithTag:(NSString *)tag;
--(XLFormRowDescriptor *)formRowAtIndex:(NSIndexPath *)indexPath;
--(XLFormRowDescriptor *)formRowWithHash:(NSUInteger)hash;
--(XLFormSectionDescriptor *)formSectionAtIndex:(NSUInteger)index;
+-(nullable NSIndexPath *)indexPathOfFormRow:(nonnull XLFormRowDescriptor *)formRow;
 
+-(nonnull NSDictionary *)formValues;
+-(nonnull NSDictionary *)httpParameters:(nonnull XLFormViewController *)formViewController;
 
--(NSIndexPath *)indexPathOfFormRow:(XLFormRowDescriptor *)formRow;
+-(nonnull NSArray *)localValidationErrors:(nonnull XLFormViewController *)formViewController;
+-(void)setFirstResponder:(nonnull XLFormViewController *)formViewController;
 
--(NSDictionary *)formValues;
--(NSDictionary *)httpParameters:(XLFormViewController *)formViewController;
+-(nullable XLFormRowDescriptor *)nextRowDescriptorForRow:(nonnull XLFormRowDescriptor *)currentRow;
+-(nullable XLFormRowDescriptor *)previousRowDescriptorForRow:(nonnull XLFormRowDescriptor *)currentRow;
 
--(NSArray *)localValidationErrors:(XLFormViewController *)formViewController;
-- (void)setFirstResponder:(XLFormViewController *)formViewController;
+-(void)forceEvaluate;
 
 @end

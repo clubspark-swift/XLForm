@@ -2,7 +2,7 @@
 //  XLFormSectionDescriptor.h
 //  XLForm ( https://github.com/xmartlabs/XLForm )
 //
-//  Copyright (c) 2014 Xmartlabs ( http://xmartlabs.com )
+//  Copyright (c) 2015 Xmartlabs ( http://xmartlabs.com )
 //
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,32 +26,49 @@
 #import "XLFormRowDescriptor.h"
 #import <Foundation/Foundation.h>
 
+typedef NS_OPTIONS(NSUInteger, XLFormSectionOptions) {
+    XLFormSectionOptionNone        = 0,
+    XLFormSectionOptionCanInsert   = 1 << 0,
+    XLFormSectionOptionCanDelete   = 1 << 1,
+    XLFormSectionOptionCanReorder  = 1 << 2
+};
+
+typedef NS_ENUM(NSUInteger, XLFormSectionInsertMode) {
+    XLFormSectionInsertModeLastRow = 0,
+    XLFormSectionInsertModeButton = 2
+};
 
 @class XLFormDescriptor;
 
 @interface XLFormSectionDescriptor : NSObject
 
-@property (nonatomic) NSString * title;
-@property (nonatomic) NSString * footerTitle;
-@property (readonly) NSMutableArray * formRows;
-@property BOOL isMultivaluedSection;
-@property (nonatomic) NSString * multiValuedTag;
+@property (nonatomic, nullable) NSString * title;
+@property (nonatomic, nullable) NSString * footerTitle;
+@property (readonly, nonnull) NSMutableArray * formRows;
 
-@property (weak) XLFormDescriptor * formDescriptor;
+@property (readonly) XLFormSectionInsertMode sectionInsertMode;
+@property (readonly) XLFormSectionOptions sectionOptions;
+@property (nullable) XLFormRowDescriptor * multivaluedRowTemplate;
+@property (readonly, nullable) XLFormRowDescriptor * multivaluedAddButton;
+@property (nonatomic, nullable) NSString * multivaluedTag;
 
-+(id)formSection;
-+(id)formSectionWithTitle:(NSString *)title;
-+(id)formSectionWithTitle:(NSString *)title multivaluedSection:(BOOL)multivaluedSection;
+@property (weak, null_unspecified) XLFormDescriptor * formDescriptor;
 
--(void)addFormRow:(XLFormRowDescriptor *)formRow;
--(void)addFormRow:(XLFormRowDescriptor *)formRow afterRow:(XLFormRowDescriptor *)afterRow;
--(void)addFormRow:(XLFormRowDescriptor *)formRow beforeRow:(XLFormRowDescriptor *)beforeRow;
+@property (nonnull) id hidden;
+-(BOOL)isHidden;
+
++(nonnull instancetype)formSection;
++(nonnull instancetype)formSectionWithTitle:(nullable NSString *)title;
++(nonnull instancetype)formSectionWithTitle:(nullable NSString *)title multivaluedSection:(BOOL)multivaluedSection DEPRECATED_ATTRIBUTE DEPRECATED_MSG_ATTRIBUTE("Use formSectionWithTitle:sectionType: instead");
++(nonnull instancetype)formSectionWithTitle:(nullable NSString *)title sectionOptions:(XLFormSectionOptions)sectionOptions;
++(nonnull instancetype)formSectionWithTitle:(nullable NSString *)title sectionOptions:(XLFormSectionOptions)sectionOptions sectionInsertMode:(XLFormSectionInsertMode)sectionInsertMode;
+
+-(BOOL)isMultivaluedSection;
+-(void)addFormRow:(nonnull XLFormRowDescriptor *)formRow;
+-(void)addFormRow:(nonnull XLFormRowDescriptor *)formRow afterRow:(nonnull XLFormRowDescriptor *)afterRow;
+-(void)addFormRow:(nonnull XLFormRowDescriptor *)formRow beforeRow:(nonnull XLFormRowDescriptor *)beforeRow;
 -(void)removeFormRowAtIndex:(NSUInteger)index;
--(void)removeFormRow:(XLFormRowDescriptor *)formRow;
-
--(XLFormRowDescriptor *)newMultivaluedFormRowDescriptor;
-
-
-
+-(void)removeFormRow:(nonnull XLFormRowDescriptor *)formRow;
+-(void)moveRowAtIndexPath:(nonnull NSIndexPath *)sourceIndex toIndexPath:(nonnull NSIndexPath *)destinationIndex;
 
 @end

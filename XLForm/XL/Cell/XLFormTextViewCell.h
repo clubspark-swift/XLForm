@@ -2,7 +2,7 @@
 //  XLFormTextViewCell.h
 //  XLForm ( https://github.com/xmartlabs/XLForm )
 //
-//  Copyright (c) 2014 Xmartlabs ( http://xmartlabs.com )
+//  Copyright (c) 2015 Xmartlabs ( http://xmartlabs.com )
 //
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,9 +27,16 @@
 #import "XLFormBaseCell.h"
 #import <UIKit/UIKit.h>
 
+extern NSString *const XLFormTextViewLengthPercentage;
+extern NSString *const XLFormTextViewMaxNumberOfCharacters;
+
 @interface XLFormTextViewCell : XLFormBaseCell
 
-@property (nonatomic, readonly) UILabel * label;
+@property (nonatomic, readonly) UILabel * label DEPRECATED_ATTRIBUTE DEPRECATED_MSG_ATTRIBUTE("Use textLabel instead");
+@property (nonatomic, readonly) UILabel * textLabel;
 @property (nonatomic, readonly) XLFormTextView * textView;
+
+@property (nonatomic) NSNumber *textViewLengthPercentage;
+@property (nonatomic) NSNumber *textViewMaxNumberOfCharacters;
 
 @end

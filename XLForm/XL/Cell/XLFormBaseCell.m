@@ -2,7 +2,7 @@
 //  XLFormBaseCell.m
 //  XLForm ( https://github.com/xmartlabs/XLForm )
 //
-//  Copyright (c) 2014 Xmartlabs ( http://xmartlabs.com )
+//  Copyright (c) 2015 Xmartlabs ( http://xmartlabs.com )
 //
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,12 +27,7 @@
 
 @implementation XLFormBaseCell
 
-- (id)init
-{
-    return [self initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
-}
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -41,29 +36,36 @@
     return self;
 }
 
-
--(void)setRowDescriptor:(XLFormRowDescriptor *)rowDescriptor
+- (void)awakeFromNib
 {
-    _rowDescriptor = rowDescriptor;
-    [self update];
+    [super awakeFromNib];
+    [self configure];
 }
-
 
 - (void)configure
 {
-    //override
 }
 
 - (void)update
 {
-    // override
+    self.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.textLabel.textColor  = self.rowDescriptor.isDisabled ? [UIColor grayColor] : [UIColor blackColor];
+}
+
+-(void)highlight
+{
+}
+
+-(void)unhighlight
+{
 }
 
 -(XLFormViewController *)formViewController
 {
     id responder = self;
     while (responder){
-        if ([responder isKindOfClass:[UIViewController class]]){
+        if ([responder isKindOfClass:[XLFormViewController class]]){
             return responder;
         }
         responder = [responder nextResponder];
@@ -71,5 +73,40 @@
     return nil;
 }
 
+#pragma mark - Navigation Between Fields
+
+-(UIView *)inputAccessoryView
+{
+    UIView * inputAccessoryView = [self.formViewController inputAccessoryViewForRowDescriptor:self.rowDescriptor];
+    if (inputAccessoryView){
+        return inputAccessoryView;
+    }
+    return [super inputAccessoryView];
+}
+
+-(BOOL)formDescriptorCellCanBecomeFirstResponder
+{
+    return NO;
+}
+
+#pragma mark -
+
+-(BOOL)becomeFirstResponder
+{
+    BOOL result = [super becomeFirstResponder];
+    if (result){
+        [self.formViewController beginEditing:self.rowDescriptor];
+    }
+    return result;
+}
+
+-(BOOL)resignFirstResponder
+{
+    BOOL result = [super resignFirstResponder];
+    if (result){
+        [self.formViewController endEditing:self.rowDescriptor];
+    }
+    return result;
+}
 
 @end

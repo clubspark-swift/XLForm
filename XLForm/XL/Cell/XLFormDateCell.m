@@ -31,7 +31,7 @@
 
 @interface XLFormDateCell()
 
-@property (nonatomic) UIDatePicker *datePicker;
+//@property (nonatomic) UIDatePicker *datePicker;
 
 @end
 
